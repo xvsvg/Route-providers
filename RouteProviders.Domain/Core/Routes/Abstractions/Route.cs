@@ -6,6 +6,8 @@ public abstract class Route
 {
     private decimal _price;
 
+    protected Route() { }
+
     protected Route(decimal price, DateTime timeLimit)
     {
         Price = price;

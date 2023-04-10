@@ -1,11 +1,14 @@
 ﻿using RouteProviders.Domain.Core.Points.Implementations;
 using RouteProviders.Domain.Core.Routes.Abstractions;
 using RouteProviders.Domain.Core.Utils;
+#pragma warning disable CS8618
 
 namespace RouteProviders.Domain.Core.Routes.Implementations;
 
 public class ProviderTwoRoute : Route
 {
+    protected ProviderTwoRoute() { }
+
     public ProviderTwoRoute(
         ProviderTwoPoint departure,
         ProviderTwoPoint arrival,

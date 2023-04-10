@@ -1,10 +1,13 @@
 ﻿using RouteProviders.Domain.Core.Routes.Abstractions;
 using RouteProviders.Domain.Core.Utils;
+#pragma warning disable CS8618
 
 namespace RouteProviders.Domain.Core.Routes.Implementations;
 
 public class ProviderOneRoute : Route
 {
+    protected ProviderOneRoute() { }
+
     public ProviderOneRoute(
         string from,
         string to,
