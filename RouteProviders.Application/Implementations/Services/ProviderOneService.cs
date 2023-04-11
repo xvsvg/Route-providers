@@ -22,23 +22,21 @@ public class ProviderOneService : ISearchService
     {
         IsAvailable = false;
 
+        var providerRequest = request.AsProviderOneQuery();
+
         var routes = await _context.Routes.OfType<ProviderOneRoute>()
             .Where(r =>
-                r.DateFrom == request.OriginDateTime &&
-                r.To == request.Destination &&
-                r.From == request.Origin).ToListAsync(cancellationToken);
-
-        routes = routes
-            .Where(r => request.Filter?.DestinationDateTime == null || request.Filter.DestinationDateTime == r.DateTo)
-            .Where(r => request.Filter?.MaxPrice == null || request.Filter.MaxPrice >= r.Price)
-            .Where(r => request.Filter?.MinTimeLimit == null || request.Filter.MinTimeLimit <= r.TimeLimit)
-            .ToList();
-
+                r.DateFrom == providerRequest.DateFrom &&
+                r.To == providerRequest.To &&
+                r.From == providerRequest.From &&
+                r.DateTo == (providerRequest.DateTo ?? r.DateTo) &&
+                r.Price <= (providerRequest.MaxPrice ?? decimal.MaxValue))
+            .ToListAsync(cancellationToken);
 
         IsAvailable = true;
 
         return new Search.Response(
-            routes.AsDto(),
+            routes.AsRouteDtos(),
             routes.Min(r => r.Price),
             routes.Max(r => r.Price),
             routes.Min(r => (r.DateTo - r.DateFrom).Minutes),
