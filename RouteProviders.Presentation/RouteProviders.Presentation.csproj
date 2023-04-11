@@ -8,4 +8,15 @@
 		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.16" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.16" />
+	  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RouteProviders.Application\RouteProviders.Application.csproj" />
+	  <ProjectReference Include="..\RouteProviders.Persistence\RouteProviders.Persistence.csproj" />
+	</ItemGroup>
+
 </Project>
