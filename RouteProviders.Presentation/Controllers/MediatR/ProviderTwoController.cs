@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using RouteProviders.Application.Contracts.Search.Queries;
 
 namespace RouteProviders.Presentation.Controllers.MediatR;
@@ -7,10 +9,12 @@ namespace RouteProviders.Presentation.Controllers.MediatR;
 public class ProviderTwoController : BaseController
 {
     private readonly IMediator _mediator;
+    private readonly IDistributedCache _cache;
 
-    public ProviderTwoController(IMediator mediator)
+    public ProviderTwoController(IMediator mediator, IDistributedCache cache)
     {
         _mediator = mediator;
+        _cache = cache;
     }
 
     [HttpGet("ping")]
@@ -20,9 +24,25 @@ public class ProviderTwoController : BaseController
     }
 
     [HttpPost("search")]
-    public async Task<ActionResult<ProviderTwoSearch.Response>> FindRoutes(ProviderTwoSearch.Query query)
+    public async Task<ActionResult<ProviderTwoSearch.Response>> FindRoutes(ProviderTwoSearch.Query query, [FromQuery] bool OnlyCached)
     {
+        if (OnlyCached)
+        {
+            var cachedData = await _cache.GetStringAsync(query.ToString());
+
+            var result = await Task.Factory.StartNew(() =>
+                    JsonConvert.DeserializeObject(cachedData ?? string.Empty));
+
+            return StatusCode(StatusCodes.Status200OK, result);
+        }
+
         var response = await _mediator.Send(query);
-        return Ok(response);
+
+        var serializedResponse = await Task.Factory.StartNew(() =>
+            JsonConvert.SerializeObject(response));
+
+        await _cache.SetStringAsync(query.ToString(), serializedResponse);
+
+        return StatusCode(StatusCodes.Status200OK, response);
     }
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace RouteProviders.Presentation.Controllers.MediatR;
 
 [ApiController]
-[Route("[controller]/api/v1")]
+[Route("[controller]/api/v2")]
 public abstract class BaseController : ControllerBase
 {
     private IMediator _mediator = null!;
