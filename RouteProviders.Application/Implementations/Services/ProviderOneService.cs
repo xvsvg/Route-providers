@@ -16,7 +16,7 @@ public class ProviderOneService : ISearchService
         _context = context;
     }
 
-    public bool IsAvailable { get; private set; }
+    public bool IsAvailable { get; private set; } = true;
 
     public async Task<Search.Response> SearchAsync(Search.Query request, CancellationToken cancellationToken)
     {
