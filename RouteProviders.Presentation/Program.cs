@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using RouteProviders.Application.Extensions;
 using RouteProviders.Persistence.DataAccess.Extensions;
 using RouteProviders.Persistence.DataAccess.Helpers;
@@ -10,14 +11,25 @@ builder.Services.AddPersistence(o => o.UseLazyLoadingProxies().UseSqlite("Data S
 builder.Services.AddApplication();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddResponseCaching();
+builder.Services.AddDistributedMemoryCache();
+//builder.Services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowAnyOrigin();
+    });
+});
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerUI();
     app.UseSwagger();
+    app.UseSwaggerUI();
 
     using (IServiceScope scope = app.Services.CreateScope())
     {
@@ -25,6 +37,6 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseResponseCaching();
+app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
