@@ -47,7 +47,7 @@ internal static class Validator
     {
         ArgumentNullException.ThrowIfNull(destination);
 
-        if (origin.Date.CompareTo(destination.Date) < 0)
+        if (origin.Date.CompareTo(destination.Date) >= 0)
             throw DateException.DestinationDateException("Destination date should be later than origin date");
 
         return destination;
