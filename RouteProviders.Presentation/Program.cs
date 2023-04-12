@@ -12,7 +12,6 @@ builder.Services.AddApplication();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDistributedMemoryCache();
-//builder.Services.AddSingleton<IDistributedCache, MemoryDistributedCache>();
 
 builder.Services.AddCors(options =>
 {
